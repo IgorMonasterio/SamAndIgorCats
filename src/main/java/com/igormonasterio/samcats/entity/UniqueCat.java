@@ -63,6 +63,7 @@ public class UniqueCat extends Cat {
     @Override
     public void die(DamageSource source) {
         super.die(source);
-        if (level() instanceof ServerLevel server) CatSpawner.onDeath(server.getServer(), this);
+        // Another mod may cancel the death (LivingDeathEvent); only a cat that really died counts.
+        if (dead && level() instanceof ServerLevel server) CatSpawner.onDeath(server.getServer(), this);
     }
 }
