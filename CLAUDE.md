@@ -1,7 +1,7 @@
 # SamAndIgorCats
 
 Minecraft mod for **Forge 1.20.1** (Forge 47.4+, Java 17, Mojang official mappings).
-Mod id `samcats`, package `com.igormonasterio.samcats`, version `0.0.2-alpha`, MIT, author Igor Monasterio.
+Mod id `samcats`, package `com.igormonasterio.samcats`, version `0.0.3-alpha`, MIT, author Igor Monasterio.
 
 What it adds:
 
