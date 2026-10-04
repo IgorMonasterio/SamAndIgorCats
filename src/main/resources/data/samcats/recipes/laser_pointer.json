@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["  D", " R ", "I  "],
+  "key": {
+    "D": { "item": "minecraft:red_dye" },
+    "R": { "item": "minecraft:redstone" },
+    "I": { "item": "minecraft:iron_ingot" }
+  },
+  "result": { "item": "samcats:laser_pointer" }
+}

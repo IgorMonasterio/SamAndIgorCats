@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "top": "samcats:block/cardboard_box_top",
+    "bottom": "samcats:block/cardboard_box_bottom",
+    "side": "samcats:block/cardboard_box_side"
+  }
+}

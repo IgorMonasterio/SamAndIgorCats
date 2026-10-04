@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "closed=false": { "model": "samcats:block/cardboard_box" },
+    "closed=true": { "model": "samcats:block/cardboard_box_closed" }
+  }
+}

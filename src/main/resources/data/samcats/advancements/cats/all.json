@@ -1,0 +1,255 @@
+{
+  "parent": "samcats:cats/root",
+  "display": {
+    "icon": {
+      "item": "minecraft:cod"
+    },
+    "title": {
+      "translate": "advancements.samcats.cats.all.title"
+    },
+    "description": {
+      "translate": "advancements.samcats.cats.all.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "naru": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:naru"
+        }
+      }
+    },
+    "ivy": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:ivy"
+        }
+      }
+    },
+    "batman": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:batman"
+        }
+      }
+    },
+    "bonzo": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:bonzo"
+        }
+      }
+    },
+    "calcetin": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:calcetin"
+        }
+      }
+    },
+    "cheeto": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:cheeto"
+        }
+      }
+    },
+    "dolores": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:dolores"
+        }
+      }
+    },
+    "el_abuelo": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:el_abuelo"
+        }
+      }
+    },
+    "el_bebe": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:el_bebe"
+        }
+      }
+    },
+    "sin_nombre": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:sin_nombre"
+        }
+      }
+    },
+    "el_negrito": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:el_negrito"
+        }
+      }
+    },
+    "itlerina": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:itlerina"
+        }
+      }
+    },
+    "kalessi": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:kalessi"
+        }
+      }
+    },
+    "la_trico": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:la_trico"
+        }
+      }
+    },
+    "lince": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:lince"
+        }
+      }
+    },
+    "mia": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:mia"
+        }
+      }
+    },
+    "noah": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:noah"
+        }
+      }
+    },
+    "nube": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:nube"
+        }
+      }
+    },
+    "oliver": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:oliver"
+        }
+      }
+    },
+    "stripey": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:stripey"
+        }
+      }
+    },
+    "valentino": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:valentino"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "naru"
+    ],
+    [
+      "ivy"
+    ],
+    [
+      "batman"
+    ],
+    [
+      "bonzo"
+    ],
+    [
+      "calcetin"
+    ],
+    [
+      "cheeto"
+    ],
+    [
+      "dolores"
+    ],
+    [
+      "el_abuelo"
+    ],
+    [
+      "el_bebe"
+    ],
+    [
+      "sin_nombre"
+    ],
+    [
+      "el_negrito"
+    ],
+    [
+      "itlerina"
+    ],
+    [
+      "kalessi"
+    ],
+    [
+      "la_trico"
+    ],
+    [
+      "lince"
+    ],
+    [
+      "mia"
+    ],
+    [
+      "noah"
+    ],
+    [
+      "nube"
+    ],
+    [
+      "oliver"
+    ],
+    [
+      "stripey"
+    ],
+    [
+      "valentino"
+    ]
+  ],
+  "rewards": {
+    "experience": 500
+  }
+}

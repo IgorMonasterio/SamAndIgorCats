@@ -1,0 +1,32 @@
+{
+  "parent": "samcats:cats/root",
+  "display": {
+    "icon": {
+      "item": "samcats:el_abuelo_spawn_egg"
+    },
+    "title": {
+      "translate": "entity.samcats.el_abuelo"
+    },
+    "description": {
+      "translate": "advancements.samcats.cats.tame",
+      "with": [
+        {
+          "translate": "entity.samcats.el_abuelo"
+        }
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "tamed": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:el_abuelo"
+        }
+      }
+    }
+  }
+}

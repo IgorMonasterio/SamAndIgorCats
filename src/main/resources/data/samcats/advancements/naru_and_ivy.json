@@ -1,0 +1,47 @@
+{
+  "parent": "samcats:cats/naru",
+  "display": {
+    "icon": {
+      "item": "minecraft:cod"
+    },
+    "title": {
+      "translate": "advancements.samcats.naru_and_ivy.title"
+    },
+    "description": {
+      "translate": "advancements.samcats.naru_and_ivy.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "naru": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:naru"
+        }
+      }
+    },
+    "ivy": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "samcats:ivy"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "naru"
+    ],
+    [
+      "ivy"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}
