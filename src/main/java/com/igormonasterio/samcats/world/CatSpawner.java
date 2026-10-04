@@ -22,8 +22,8 @@ import java.util.List;
 
 /**
  * Keeps exactly one of each family cat per world. Naru and Ivy show up first, together,
- * near a player who has been online for a little while; the rest arrive one by one every
- * few minutes. A cat that dies comes back one Minecraft day later.
+ * near a player (in any dimension) who has been online for a little while; the rest arrive
+ * one by one every few minutes. A cat that dies comes back one Minecraft day later.
  */
 public final class CatSpawner {
     private CatSpawner() {}
@@ -35,18 +35,19 @@ public final class CatSpawner {
     private static final int NEWCOMER_SPREAD = 2400;    // ...to 4 min
 
     public static void tick(MinecraftServer server) {
-        ServerLevel level = server.overworld();
-        long now = level.getGameTime();
+        long now = server.overworld().getGameTime();
         if (now % CHECK_INTERVAL != 0) return;
 
         WorldCatsData data = WorldCatsData.get(server);
         List<CatProfile> ready = CatProfiles.ALL.stream().filter(p -> data.isReady(p.id(), now)).toList();
         if (ready.isEmpty()) return;
 
-        List<ServerPlayer> players = level.players().stream()
+        // Any dimension: players who live in the Nether or the End get cats too.
+        List<ServerPlayer> players = server.getPlayerList().getPlayers().stream()
                 .filter(p -> !p.isSpectator() && p.tickCount > MIN_PLAYER_TICKS).toList();
         if (players.isEmpty()) return;
-        ServerPlayer player = players.get(level.random.nextInt(players.size()));
+        ServerPlayer player = players.get(server.overworld().random.nextInt(players.size()));
+        ServerLevel level = player.serverLevel();
 
         List<CatProfile> pair = ready.stream()
                 .filter(p -> p.id().equals(CatProfiles.NARU) || p.id().equals(CatProfiles.IVY)).toList();
@@ -105,13 +106,13 @@ public final class CatSpawner {
             int z = center.getZ() + (int) Math.round(Math.sin(angle) * radius);
             if (!level.hasChunkAt(new BlockPos(x, center.getY(), z))) continue;
 
-            if (attempt < 24) {
+            if (attempt < 24 || level.dimensionType().hasCeiling()) {
                 for (int dy = 6; dy >= -6; dy--) {
                     BlockPos pos = new BlockPos(x, center.getY() + dy, z);
                     if (isFree(level, pos)) return pos;
                 }
             } else {
-                // Last resort: the surface.
+                // Last resort: the surface (not in the Nether, where that's the bedrock roof).
                 BlockPos pos = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
                 if (isFree(level, pos)) return pos;
             }

@@ -78,7 +78,7 @@ src/main/java/com/igormonasterio/samcats/
                           ChaseIvyGoal
   world/
     CatSpawner.java       Runs from ServerTickEvent every 200 ticks: picks a ready cat and spawns it near a
-                          random overworld player online > 20 s; handles deaths (return after 24000 ticks)
+                          random player (any dimension) online > 20 s; handles deaths (return after 24000 ticks)
     WorldCatsData.java    SavedData on the overworld: which UUID is the "real" copy of each cat
   block/CardboardBoxBlock Open box (thin floor collision, pathfindable). CLOSED=true is only used to render a
                           boxed player.
@@ -118,8 +118,10 @@ Cat registry ids (do not change): `naru`, `ivy`, `batman`, `bonzo`, `calcetin`, 
 - `WorldCatsData` (`samcats_cats.dat` in the overworld data folder) keeps `alive: id -> UUID` and
   `returnAt: id -> game time`, plus `nextNewcomer`. A cat is "ready" when it has no UUID and `returnAt` has passed.
 - `CatSpawner.tick` (overworld game time, every 200 ticks): if Naru or Ivy is ready, both spawn together near a
-  player; otherwise one random ready cat spawns once `nextNewcomer` has passed (2-4 min between newcomers).
-  Spots are searched in a 10-20 block ring, near the player's height first, then on the surface.
+  random player in any dimension; otherwise one random ready cat spawns once `nextNewcomer` has passed
+  (2-4 min between newcomers).
+  Spots are searched in a 10-20 block ring, near the player's height first, then on the surface (except in
+  dimensions with a ceiling, like the Nether).
 - `onDeath` only reacts if the dying cat's UUID is the tracked one (egg copies don't count): it clears the UUID,
   sets `returnAt = now + 24000` and broadcasts the "ran away" message.
 - NBT format is world data: tag `Cats` -> `<id>` -> `UUID`, `Return`; `NextNewcomer`. `load` also migrates the
