@@ -57,3 +57,7 @@ The jar ends up in `build/libs/`. The cat coats are generated from the vanilla c
 ## Author
 
 Igor Monasterio
+
+## License
+
+MIT. See [LICENSE](LICENSE).
