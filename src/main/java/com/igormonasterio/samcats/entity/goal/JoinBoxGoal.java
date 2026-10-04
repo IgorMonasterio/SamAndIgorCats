@@ -21,7 +21,8 @@ public class JoinBoxGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (cat.isOrderedToSit() || cat.isPassenger() || cat.tickCount % 10 != 0) return false;
+        // canUse() only runs every other tick (offset per entity), so throttle randomly, not with tickCount.
+        if (cat.isOrderedToSit() || cat.isPassenger() || cat.getRandom().nextInt(reducedTickDelay(10)) != 0) return false;
         player = cat.level().getNearestPlayer(cat.getX(), cat.getY(), cat.getZ(), NOTICE_RANGE,
                 p -> p instanceof Player pl && BoxStealth.isBoxed(pl));
         return player != null;
