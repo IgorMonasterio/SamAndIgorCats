@@ -78,7 +78,7 @@ src/main/java/com/igormonasterio/samcats/
                           ChaseIvyGoal
   world/
     CatSpawner.java       Runs from ServerTickEvent every 200 ticks: picks a ready cat and spawns it near a
-                          random overworld player online > 20 s; handles deaths (return after 24000 ticks)
+                          random player (any dimension) online > 20 s; handles deaths (return after 24000 ticks)
     WorldCatsData.java    SavedData on the overworld: which UUID is the "real" copy of each cat
   block/CardboardBoxBlock Open box (thin floor collision, pathfindable). CLOSED=true is only used to render a
                           boxed player.
@@ -108,22 +108,35 @@ Cat registry ids (do not change): `naru`, `ivy`, `batman`, `bonzo`, `calcetin`, 
 
 - `UniqueCat extends Cat`. `finalizeSpawn` sets the custom name to the translatable entity name and makes it
   persistent; `removeWhenFarAway` is false. Breeding produces plain vanilla kittens. `die()` calls
-  `CatSpawner.onDeath`.
+  `CatSpawner.onDeath` (only if the death wasn't cancelled); Forge's `onAddedToWorld` / `onRemovedFromWorld`
+  call `CatSpawner.onLoaded` / `onUnloaded`.
 - `CommonEvents.onEntityJoin` adds three goals to **every** `Cat` on the server: `LaserChaseGoal` (priority 1,
   tamed cats only), `JoinBoxGoal` (2) and `SitInBoxGoal` (5). All of them respect `isOrderedToSit`.
 - Naru gets `ChaseIvyGoal` (8); Ivy gets an `AvoidEntityGoal` (3) against a chasing Naru.
 
 ### Spawner and SavedData
 
-- `WorldCatsData` (`samcats_cats.dat` in the overworld data folder) keeps `alive: id -> UUID` and
-  `returnAt: id -> game time`, plus `nextNewcomer`. A cat is "ready" when it has no UUID and `returnAt` has passed.
+- `WorldCatsData` (`samcats_cats.dat` in the overworld data folder) keeps `alive: id -> UUID`,
+  `returnAt: id -> game time`, `lastSeen: id -> dimension + block pos`, `previous: id -> UUID` (the last tracked
+  cat after it died or got lost) and `nextNewcomer`. A cat is "ready" when it has no UUID and `returnAt` has passed.
 - `CatSpawner.tick` (overworld game time, every 200 ticks): if Naru or Ivy is ready, both spawn together near a
-  player; otherwise one random ready cat spawns once `nextNewcomer` has passed (2-4 min between newcomers).
-  Spots are searched in a 10-20 block ring, near the player's height first, then on the surface.
+  random player in any dimension; otherwise one random ready cat spawns once `nextNewcomer` has passed
+  (2-4 min between newcomers).
+  Spots are searched in a 10-20 block ring, near the player's height first, then on the surface (except in
+  dimensions with a ceiling, like the Nether).
 - `onDeath` only reacts if the dying cat's UUID is the tracked one (egg copies don't count): it clears the UUID,
   sets `returnAt = now + 24000` and broadcasts the "ran away" message.
-- NBT format is world data: tag `Cats` -> `<id>` -> `UUID`, `Return`; `NextNewcomer`. `load` also migrates the
-  0.0.1 keys `Naru`, `Ivy`, `NaruReturn`, `IvyReturn`. Keep it backwards compatible.
+- Reconciliation, so a cat never goes missing for good or gets duplicated after a crash or another mod:
+  - Every check, `track` looks each tracked UUID up in all levels and updates `lastSeen`. If it isn't found but
+    the entities of the 5x5 chunks around `lastSeen` are loaded, for 2 checks in a row, the cat is lost:
+    it's marked as gone with `returnAt = now`, so it comes back soon.
+  - `onUnloaded`: a tracked cat removed as `DISCARDED` (deleted without dying) is lost right away; one saved
+    with its chunk updates `lastSeen` to its exact position.
+  - `onLoaded`: if the cat's UUID is `previous` and nothing else is tracked for that id, it's taken back as the
+    real one (e.g. the data was saved but the chunk wasn't before a crash).
+- NBT format is world data: tag `Cats` -> `<id>` -> `UUID`, `Return`, `Previous`, `SeenDim`, `SeenPos`;
+  `NextNewcomer`. `load` also migrates the 0.0.1 keys `Naru`, `Ivy`, `NaruReturn`, `IvyReturn`. Keep it backwards
+  compatible.
 
 ### Client
 

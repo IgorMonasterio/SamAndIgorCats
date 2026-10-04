@@ -2,6 +2,7 @@ package com.igormonasterio.samcats.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -29,7 +30,15 @@ public class CardboardBoxItem extends BlockItem implements Equipable {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        return this.swapWithEquipmentSlot(this, level, player, hand);
+        ItemStack held = player.getItemInHand(hand);
+        if (held.getCount() == 1) return this.swapWithEquipmentSlot(this, level, player, hand);
+
+        // From a stack, wear a single box: the vanilla swap would put the whole stack on your head.
+        if (!player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) return InteractionResultHolder.fail(held);
+        if (!level.isClientSide()) player.awardStat(Stats.ITEM_USED.get(this));
+        player.setItemSlot(EquipmentSlot.HEAD, held.copyWithCount(1));
+        if (!player.getAbilities().instabuild) held.shrink(1);
+        return InteractionResultHolder.sidedSuccess(held, level.isClientSide());
     }
 
     @Override
