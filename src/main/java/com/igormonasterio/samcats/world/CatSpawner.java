@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Keeps exactly one of each family cat per world. Naru and Ivy show up first, together,
- * near a player (in any dimension) who has been online for a little while; the rest arrive
- * one by one every few minutes. A cat that dies comes back one Minecraft day later.
+ * Keeps exactly one of each family cat per world. They arrive one by one, in random order,
+ * near a player (in any dimension) who has been online for a little while: the first soon after,
+ * then one every few minutes. A cat that dies comes back one Minecraft day later.
  * A cat that vanishes without dying (a crash at the wrong moment, another mod) is given up
  * for lost and comes back too; if the lost one turns up again, it is taken back.
  */
@@ -57,21 +57,6 @@ public final class CatSpawner {
         if (players.isEmpty()) return;
         ServerPlayer player = players.get(server.overworld().random.nextInt(players.size()));
         ServerLevel level = player.serverLevel();
-
-        List<CatProfile> pair = ready.stream()
-                .filter(p -> p.id().equals(CatProfiles.NARU) || p.id().equals(CatProfiles.IVY)).toList();
-        if (!pair.isEmpty()) {
-            // Naru and Ivy always turn up together.
-            BlockPos anchor = findSpot(level, player.blockPosition(), 10, 20);
-            if (anchor == null) return;
-            for (CatProfile profile : pair) {
-                BlockPos near = findSpot(level, anchor, 2, 5);
-                spawn(level, data, profile, near != null ? near : anchor, player);
-            }
-            data.nextNewcomer = now + NEWCOMER_MIN + level.random.nextInt(NEWCOMER_SPREAD);
-            data.setDirty();
-            return;
-        }
 
         if (now < data.nextNewcomer) return;
         CatProfile profile = ready.get(level.random.nextInt(ready.size()));

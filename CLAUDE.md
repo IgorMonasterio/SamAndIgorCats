@@ -6,7 +6,7 @@ Mod id `samcats`, package `com.igormonasterio.samcats`, version `0.0.3-alpha`, M
 What it adds:
 
 - **21 unique cats**, one of each per world. Each has its own coat (texture), body size and meow pitch.
-  Naru and Ivy arrive first, together; the rest arrive one by one. They never despawn and come back
+  They arrive one by one, in random order. They never despawn and come back
   one Minecraft day after dying. Spawn eggs make extra copies that the world does not track.
 - **Cardboard box**: placed, cats walk in and sit; worn on the head while sneaking, monsters ignore you
   (except bosses and the Warden), nearby cats join you, and 3+ cats heal you.
@@ -119,9 +119,9 @@ Cat registry ids (do not change): `naru`, `ivy`, `batman`, `bonzo`, `calcetin`, 
 - `WorldCatsData` (`samcats_cats.dat` in the overworld data folder) keeps `alive: id -> UUID`,
   `returnAt: id -> game time`, `lastSeen: id -> dimension + block pos`, `previous: id -> UUID` (the last tracked
   cat after it died or got lost) and `nextNewcomer`. A cat is "ready" when it has no UUID and `returnAt` has passed.
-- `CatSpawner.tick` (overworld game time, every 200 ticks): if Naru or Ivy is ready, both spawn together near a
-  random player in any dimension; otherwise one random ready cat spawns once `nextNewcomer` has passed
-  (2-4 min between newcomers).
+- `CatSpawner.tick` (overworld game time, every 200 ticks): one random ready cat (Naru and Ivy included, no
+  special order) spawns near a random player in any dimension once `nextNewcomer` has passed (2-4 min between
+  newcomers; the first one right after the player's first 20 s online).
   Spots are searched in a 10-20 block ring, near the player's height first, then on the surface (except in
   dimensions with a ceiling, like the Nether).
 - `onDeath` only reacts if the dying cat's UUID is the tracked one (egg copies don't count): it clears the UUID,
