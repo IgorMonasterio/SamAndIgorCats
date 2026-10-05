@@ -35,7 +35,7 @@ public final class CatSpawner {
     private CatSpawner() {}
 
     private static final int CHECK_INTERVAL = 200;      // 10 s
-    private static final int MIN_PLAYER_TICKS = 400;    // player online for 20 s
+    private static final int MIN_PLAYER_TICKS = 400;    // player online for 20 s: the first cat turns up 20-30 s after joining
     private static final long RETURN_DELAY = 24000L;    // one Minecraft day
     private static final int NEWCOMER_MIN = 2400;       // 2 min
     private static final int NEWCOMER_SPREAD = 2400;    // ...to 4 min
@@ -157,6 +157,9 @@ public final class CatSpawner {
         data.setAlive(profile.id(), cat.getUUID());
         data.seen(profile.id(), GlobalPos.of(level.dimension(), pos));
         level.playSound(null, pos, SoundEvents.CAT_AMBIENT, SoundSource.NEUTRAL, 1.5F, profile.voicePitch());
+        // La Trico, the neighbourhood gossip, comes over to say hello.
+        level.getEntitiesOfClass(UniqueCat.class, cat.getBoundingBox().inflate(64.0D), c -> c != cat && c.is(CatProfiles.LA_TRICO))
+                .forEach(trico -> trico.greet(cat));
         player.sendSystemMessage(Component.translatable("samcats.msg.appeared", cat.getDisplayName())
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
     }

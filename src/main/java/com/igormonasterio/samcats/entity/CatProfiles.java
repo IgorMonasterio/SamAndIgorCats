@@ -1,12 +1,14 @@
 package com.igormonasterio.samcats.entity;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Every cat in the mod. Names live in the lang files; this only holds what the code needs.
@@ -16,6 +18,34 @@ public final class CatProfiles {
 
     public static final String NARU = "naru";
     public static final String IVY = "ivy";
+    public static final String BATMAN = "batman";
+    public static final String BONZO = "bonzo";
+    public static final String CALCETIN = "calcetin";
+    public static final String CHEETO = "cheeto";
+    public static final String DOLORES = "dolores";
+    public static final String EL_ABUELO = "el_abuelo";
+    public static final String EL_BEBE = "el_bebe";
+    public static final String SIN_NOMBRE = "sin_nombre";
+    public static final String EL_NEGRITO = "el_negrito";
+    public static final String ITLERINA = "itlerina";
+    public static final String KALESSI = "kalessi";
+    public static final String LA_TRICO = "la_trico";
+    public static final String LINCE = "lince";
+    public static final String MIA = "mia";
+    public static final String NOAH = "noah";
+    public static final String NUBE = "nube";
+    public static final String OLIVER = "oliver";
+    public static final String STRIPEY = "stripey";
+    public static final String VALENTINO = "valentino";
+
+    /** The street cats that follow Batman around while nobody has tamed them. */
+    public static final Set<String> STRAYS = Set.of(CALCETIN, EL_ABUELO, EL_BEBE, SIN_NOMBRE,
+            EL_NEGRITO, LA_TRICO, LINCE);
+
+    /** Whether {@code entity} is the family cat {@code id}. */
+    public static boolean is(Entity entity, String id) {
+        return entity instanceof UniqueCat cat && cat.is(id);
+    }
 
     public static final List<CatProfile> ALL = List.of(
             new CatProfile(NARU, 1.0F, 1.0F, 0x8C8C8C, 0x3A3A3A),

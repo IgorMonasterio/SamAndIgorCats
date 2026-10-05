@@ -1,13 +1,15 @@
 # SamAndIgorCats
 
 Minecraft mod for **Forge 1.20.1** (Forge 47.4+, Java 17, Mojang official mappings).
-Mod id `samcats`, package `com.igormonasterio.samcats`, version `0.0.3-alpha`, MIT, author Igor Monasterio.
+Mod id `samcats`, package `com.igormonasterio.samcats`, version `0.0.5-alpha`, MIT, author Igor Monasterio.
 
 What it adds:
 
 - **21 unique cats**, one of each per world. Each has its own coat (texture), body size and meow pitch.
   They arrive one by one, in random order. They never despawn and come back
   one Minecraft day after dying. Spawn eggs make extra copies that the world does not track.
+  **Each cat has a personality** (see "Personalities" below), and sneak + right click with an empty hand
+  strokes a family cat.
 - **Cardboard box**: placed, cats walk in and sit; worn on the head while sneaking, monsters ignore you
   (except bosses and the Warden), nearby cats join you, and 3+ cats heal you.
 - **Laser pointer**: hold right-click to project a red dot up to 48 blocks away; tamed cats chase and pounce on it.
@@ -66,16 +68,21 @@ src/main/java/com/igormonasterio/samcats/
                           laser item, creative tab
   CommonEvents.java       Forge-bus events: adds laser/box goals to every Cat (vanilla too), box stealth
                           (cancel/clear monster targets), purring regen, spawner tick, laser cleanup on logout
+  NaruPowers.java         Forge-bus events for Naru: nine lives (LivingDeathEvent), roar (LivingHurtEvent),
+                          night vision for her owner
   BoxStealth.java         isBoxed / isHidden / canBeFooled rules
   LaserTracker.java       Server-side map player UUID -> current laser dot (dimension, position, game time)
   entity/
     CatProfile(s).java    The list of cats: id, scale, voice pitch, spawn egg colours. Source of truth in Java.
     UniqueCat.java        Base class for family cats: persistent, custom name, voice pitch, vanilla kittens,
                           reports death to the spawner
-    NaruEntity.java       Adds ChaseIvyGoal; `chasing` flag (server-side only)
-    IvyEntity.java        Flees from Naru while she's chasing
+    NaruEntity.java       Adds ChaseIvyGoal; `chasing` / `provoked` flags; save and roar cooldowns
+    IvyEntity.java        Flees from a chasing Naru, hides in a box (HideInBoxGoal), teases Naru (TeaseNaruGoal)
+    personality/          Personalities (which goals each cat gets, reactions to a stroke) and one goal per
+                          behaviour: FollowLeader, BegForFish, StayClose, Shy, Grumpy, Play, Nap, Pose,
+                          SitOnSoft, Curious, Steal, Greet, RainShelter, BringGift, Court
     goal/                 LaserChaseGoal, JoinBoxGoal (cat joins a boxed player), SitInBoxGoal (placed box),
-                          ChaseIvyGoal
+                          ChaseIvyGoal, HideInBoxGoal, TeaseNaruGoal
   world/
     CatSpawner.java       Runs from ServerTickEvent every 200 ticks: picks a ready cat and spawns it near a
                           random player (any dimension) online > 20 s; handles deaths (return after 24000 ticks)
@@ -84,13 +91,15 @@ src/main/java/com/igormonasterio/samcats/
                           boxed player.
   item/                   CardboardBoxItem (BlockItem + Equipable on HEAD), LaserPointerItem (use-tick raycast)
   client/                 ClientEvents (renderer registration; boxed player drawn as a closed box),
-                          UniqueCatRenderer (vanilla CatRenderer with per-cat texture and scale)
+                          UniqueCatRenderer (vanilla CatRenderer with per-cat texture and scale),
+                          SamCatModel (CatModel exposing the head), CrownLayer (Naru), El Negrito's EyesLayer
 src/main/resources/
   assets/samcats/         lang (generated), models, blockstates, textures (entity/ generated except ivy.png)
   data/samcats/           advancements (cats/ generated; naru_and_ivy.json hand-written), recipes, loot table
 tools/
   gen_cat_textures.py     Cat coats from the vanilla cat textures
   gen_cat_data.py         Lang entries, spawn egg models, cat album advancements
+  gen_extra_textures.py   textures/entity/crown.png and el_negrito_eyes.png
 ```
 
 ### Registry
@@ -112,7 +121,41 @@ Cat registry ids (do not change): `naru`, `ivy`, `batman`, `bonzo`, `calcetin`, 
   call `CatSpawner.onLoaded` / `onUnloaded`.
 - `CommonEvents.onEntityJoin` adds three goals to **every** `Cat` on the server: `LaserChaseGoal` (priority 1,
   tamed cats only), `JoinBoxGoal` (2) and `SitInBoxGoal` (5). All of them respect `isOrderedToSit`.
-- Naru gets `ChaseIvyGoal` (8); Ivy gets an `AvoidEntityGoal` (3) against a chasing Naru.
+- `onEntityJoin` also adds, to every `Cat`: an `AvoidEntityGoal` (7) against Bonzo (not to Bonzo himself) and
+  `CourtGoal` (5) (not to Naru, Bonzo or Stripey). Kalessi gets no `SitInBoxGoal`.
+- Naru gets `ChaseIvyGoal` (8; starts at once when Ivy provoked her; if Ivy is in a box she gives up after
+  60 ticks). Ivy gets `HideInBoxGoal` (3), an `AvoidEntityGoal` (4) against a chasing Naru and `TeaseNaruGoal` (7).
+
+### Personalities
+
+`UniqueCat.registerGoals` calls `Personalities.addGoals`, which adds each cat's goals by id. Vanilla cat
+priorities, for reference: 1 float/panic, 2 sit when ordered, 3 relax on owner, 4 tempt, 5 lie on bed,
+6 follow owner, 7 sit on block, 8 leap, 9 attack, 10 breed, 11 stroll, 12 look at player.
+
+| Cat | What | How |
+|---|---|---|
+| Naru | Crown, court, night vision, roar, nine lives, Luck on stroke | `CrownLayer`, `CourtGoal`, `NaruPowers` (save once per 24000 ticks, saved as `SamcatsLastSave`; roar every 600 ticks) |
+| Ivy | Teases Naru, hides in a box | `TeaseNaruGoal`, `HideInBoxGoal`, `IvyEntity.isHiddenInBox` |
+| Batman | Untamed strays follow her | `FollowLeaderGoal` (10) on `CatProfiles.STRAYS` |
+| Bonzo | Begs when you hold fish; others step aside | `BegForFishGoal` (4); avoid goal in `onEntityJoin` |
+| Dolores, Mía | Stay by the owner; heal a hurt owner | `StayCloseGoal` (5); regen in `CommonEvents.onPlayerTick` |
+| Itlerina | Runs from players who aren't sneaking | `ShyGoal` (3); vanilla player-avoid removed in `UniqueCat.reassessTameGoals` |
+| Stripey | Avoids other cats | `AvoidEntityGoal<Cat>` (9) |
+| El gato sin nombre | Refuses name tags | `CommonEvents.onInteract` |
+| El Negrito | Glowing eyes | `EyesLayer` with `el_negrito_eyes.png` |
+| Lince | Hunts rabbits and chickens, brings a gift | target goals (2), `BringGiftGoal` (4), gift set in `CommonEvents.onDeath` |
+| El Bebé | Chases items and cats, pounces | `PlayGoal` (8) |
+| El Abuelo | Slow, naps a lot | movement speed 0.22 in `SamCats.onAttributes`, `NapGoal` (9) |
+| Noah | Naps belly-up; extra hearts if stroked lying | `NapGoal` (9), `Personalities.onPetted` |
+| Oliver | Hisses and backs off from sprinting players unless stroked in the last 10 min | `GrumpyGoal` (3), `SamcatsCalmUntil` |
+| Valentino | Poses after being looked at for 3 s | `PoseGoal` (4) |
+| Kalessi | Sits only on beds and carpets | `SitOnSoftGoal` (7); vanilla `CatSitOnBlockGoal` removed |
+| Cheeto | Follows players from afar while untamed | `CuriousGoal` (5); vanilla player-avoid removed |
+| Calcetín | Steals items lying around (age > 100), returns them when stroked | `StealGoal` (6), `SamcatsStash` / `SamcatsStashHome`, dropped on death |
+| La Trico | Greets every newcomer, visits other cats | `GreetGoal` (6); `CatSpawner.spawn` calls `greet` |
+| Nube | Slow fall, no fall damage; shelters from rain | `UniqueCat.aiStep` / `causeFallDamage`, `RainShelterGoal` (4) |
+
+Stroke = sneak + right click with an empty main hand (`CommonEvents.onInteract`, cancels the vanilla sit toggle).
 
 ### Spawner and SavedData
 
@@ -121,7 +164,7 @@ Cat registry ids (do not change): `naru`, `ivy`, `batman`, `bonzo`, `calcetin`, 
   cat after it died or got lost) and `nextNewcomer`. A cat is "ready" when it has no UUID and `returnAt` has passed.
 - `CatSpawner.tick` (overworld game time, every 200 ticks): one random ready cat (Naru and Ivy included, no
   special order) spawns near a random player in any dimension once `nextNewcomer` has passed (2-4 min between
-  newcomers; the first one right after the player's first 20 s online).
+  newcomers; the first one 20-30 s after the player joins).
   Spots are searched in a 10-20 block ring, near the player's height first, then on the surface (except in
   dimensions with a ceiling, like the Nether).
 - `onDeath` only reacts if the dying cat's UUID is the tracked one (egg copies don't count): it clears the UUID,

@@ -57,5 +57,8 @@
   "item.samcats.valentino_spawn_egg": "Huevo generador de Valentino",
   "itemGroup.samcats": "SamAndIgorCats",
   "samcats.msg.appeared": "Miau... ¡%s anda por aquí cerca!",
-  "samcats.msg.ran_away": "%s se ha escapado... volverá mañana."
+  "samcats.msg.naru_saved": "¡%s te ha salvado la vida!",
+  "samcats.msg.no_name": "%s no quiere ningún nombre. Está a gusto sin él.",
+  "samcats.msg.ran_away": "%s se ha escapado... volverá mañana.",
+  "samcats.msg.stash_returned": "%s te devuelve todo lo que se había llevado."
 }

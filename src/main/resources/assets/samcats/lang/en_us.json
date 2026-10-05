@@ -57,5 +57,8 @@
   "item.samcats.valentino_spawn_egg": "Valentino Spawn Egg",
   "itemGroup.samcats": "SamAndIgorCats",
   "samcats.msg.appeared": "Meow... %s is somewhere nearby!",
-  "samcats.msg.ran_away": "%s ran away... back tomorrow."
+  "samcats.msg.naru_saved": "%s saved your life!",
+  "samcats.msg.no_name": "%s doesn't want a name. He's fine without one.",
+  "samcats.msg.ran_away": "%s ran away... back tomorrow.",
+  "samcats.msg.stash_returned": "%s gives back everything he took."
 }
