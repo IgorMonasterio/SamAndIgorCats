@@ -8,7 +8,7 @@ A Minecraft Forge mod about cats: a family of **21 unique cats**, each with its 
 
 There is **only one of each cat per world**. Naru and Ivy turn up first, together, near a player who has been online for a little while. The rest arrive one by one every few minutes, with a message in chat. They never despawn, and if one dies it comes back the next Minecraft day.
 
-Naru, Ivy, Batman, Bonzo, Calcetín, Cheeto, Dolores, El Abuelo, El Bebé, Nameless, El Negrito, Itlerina pero con Hache, Kalessi, La Trico, Lince, Mía, Noah, Nube, Oliver, Stripey and Valentino.
+Naru, Ivy, Batman, Bonzo, Calcetín, Cheeto, Dolores, El Abuelo, El Bebé, El gato sin nombre, El Negrito, Itlerina pero con Hache, Kalessi, La Trico, Lince, Mía, Noah, Nube, Oliver, Stripey and Valentino.
 
 - Tame them like any cat (raw cod or salmon, sneaking, while they come to you).
 - **Naru chases Ivy** every now and then, and Ivy always runs. Tame both for a secret advancement.

@@ -17,7 +17,7 @@ CATS = [
     ('dolores', 'Dolores', 'Dolores'),
     ('el_abuelo', 'El Abuelo', 'El Abuelo'),
     ('el_bebe', 'El Bebé', 'El Bebé'),
-    ('sin_nombre', 'Nameless', 'Sin Nombre'),
+    ('sin_nombre', 'El gato sin nombre', 'El gato sin nombre'),
     ('el_negrito', 'El Negrito', 'El Negrito'),
     ('itlerina', 'Itlerina pero con Hache', 'Itlerina pero con Hache'),
     ('kalessi', 'Kalessi', 'Kalessi'),
